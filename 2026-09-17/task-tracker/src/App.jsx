@@ -5,8 +5,8 @@ import HomePage from "./pages/HomePage";
 import TaskListPage from "./pages/TaskListPage";
 import TaskDetailsPage from "./pages/TaskDetailsPage";
 import Header from "./components/Header";
-import { TaskCard } from "./components/TaskCard";
-import CompletionToggle from "./components/CompletionToggle";
+// import { TaskCard } from "./components/TaskCard";
+// import CompletionToggle from "./components/CompletionToggle";
 import { getTasks } from "./services/taskApi";
 
 import "./App.css";
@@ -67,11 +67,11 @@ function App() {
         <Link to="/tasks">Tasks</Link>
       </nav>
 
-      <TaskCard task={{ id: 1, title: "Learn JSX", completed: true }} />
+      {/* <TaskCard task={{ id: 1, title: "Learn JSX", completed: true }} />
       <TaskCard
         task={{ id: 2, title: "Practise React state", completed: false }}
       />
-      <CompletionToggle />
+      <CompletionToggle /> */}
 
       {loading && <p>Loading tasks...</p>}
       {error && <p>Error: {error}</p>}
