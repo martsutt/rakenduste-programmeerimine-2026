@@ -4,6 +4,8 @@ import PageNotFound from "./pages/PageNotFound";
 import HomePage from "./pages/HomePage";
 import TaskListPage from "./pages/TaskListPage";
 import TaskDetailsPage from "./pages/TaskDetailsPage";
+import Header from "./components/Header";
+import { TaskCard } from "./components/TaskCard";
 
 import "./App.css";
 
@@ -22,12 +24,19 @@ function App() {
   }, []);
   return (
     <>
+      <Header />
+
       <nav>
         <Link to="/">Home</Link>
       </nav>
       <nav>
         <Link to="/tasks">Tasks</Link>
       </nav>
+
+      <TaskCard task={{ id: 1, title: "Learn JSX", completed: true }} />
+      <TaskCard
+        task={{ id: 2, title: "Practise React state", completed: false }}
+      />
 
       {error && <p>Error: {error}</p>}
 
