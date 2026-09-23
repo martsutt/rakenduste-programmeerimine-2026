@@ -6,6 +6,7 @@ import TaskListPage from "./pages/TaskListPage";
 import TaskDetailsPage from "./pages/TaskDetailsPage";
 import Header from "./components/Header";
 import { TaskCard } from "./components/TaskCard";
+import CompletionToggle from "./components/CompletionToggle";
 
 import "./App.css";
 
@@ -37,6 +38,7 @@ function App() {
       <TaskCard
         task={{ id: 2, title: "Practise React state", completed: false }}
       />
+      <CompletionToggle />
 
       {error && <p>Error: {error}</p>}
 
