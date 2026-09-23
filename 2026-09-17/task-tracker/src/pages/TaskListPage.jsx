@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { TaskForm } from "../components/TaskForm";
+import { TaskCard } from "../components/TaskCard";
 
-function TaskListPage({ tasks }) {
+function TaskListPage({ tasks, onAdd, onToggle, onDelete }) {
   const [filter, setFilter] = useState("all");
 
   const filteredTasks = tasks.filter((task) => {
@@ -12,6 +14,8 @@ function TaskListPage({ tasks }) {
 
   return (
     <div>
+      <TaskForm onAddTask={onAdd} />
+
       <div>
         <button onClick={() => setFilter("all")}>All</button>
         <button onClick={() => setFilter("completed")}>Completed</button>
@@ -21,14 +25,12 @@ function TaskListPage({ tasks }) {
       {filteredTasks.length === 0 ? (
         <p>No tasks found</p>
       ) : (
-        <ul>
-          {filteredTasks.map((task) => (
-            <li key={task.id}>
-              <Link to={`/tasks/${task.id}`}>{task.title}</Link> —{" "}
-              {task.completed ? "Completed" : "Not completed"}
-            </li>
-          ))}
-        </ul>
+        filteredTasks.map((task) => (
+          <div key={task.id}>
+            <TaskCard task={task} onToggle={onToggle} onDelete={onDelete} />
+            <Link to={`/tasks/${task.id}`}>Details</Link>
+          </div>
+        ))
       )}
     </div>
   );
