@@ -1,13 +1,14 @@
 import { createApp } from "./app.js";
 import { loadTasks, saveTasks } from "./taskStorage.js";
+import { PORT, TASKS_FILE } from "./config.js";
 
-const tasks = await loadTasks("./data/tasks.json");
+const tasks = await loadTasks(TASKS_FILE);
 
 const app = createApp(
     tasks,
-    (updatedTasks) => saveTasks("./data/tasks.json", updatedTasks),
+    (updatedTasks) => saveTasks(TASKS_FILE, updatedTasks),
 );
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
