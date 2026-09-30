@@ -2,9 +2,29 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 
 export async function loadTasks(filePath) {
-    const text = await readFile(filePath, "utf8");
+    try {
+        const text = await readFile(filePath, "utf8");
 
-    return JSON.parse(text);
+        let data;
+
+        try {
+            data = JSON.parse(text);
+        } catch (error) {
+            throw new Error("Task file contains invalid JSON");
+        }
+
+        if (!Array.isArray(data)) {
+            throw new Error("Task file must contain an array");
+        }
+
+        return data;
+    } catch (error) {
+        if (error.code === "ENOENT") {
+            return [];
+        }
+
+        throw error;
+    }
 }
 
 export async function saveTasks(filePath, tasks) {
@@ -13,6 +33,6 @@ export async function saveTasks(filePath, tasks) {
     await writeFile(
         filePath,
         JSON.stringify(tasks, null, 2),
-        "utf8",
+        "utf8"
     );
 }
