@@ -7,7 +7,10 @@ const defaultTasks = [
     { id: 3, title: "Build a Node.js API", completed: false },
 ];
 
-export function createApp(initialTasks = defaultTasks) {
+export function createApp(
+    initialTasks = defaultTasks,
+    saveTasksToFile = null,
+) {
     const app = express();
 
     const tasks = initialTasks.map((task) => ({ ...task }));
@@ -69,7 +72,7 @@ export function createApp(initialTasks = defaultTasks) {
         res.status(200).json({ status: "ok" });
     });
 
-    app.post("/api/tasks", (req, res) => {
+    app.post("/api/tasks", async (req, res, next) => {
         const { title } = req.body;
 
         if (typeof title !== "string") {
@@ -98,10 +101,18 @@ export function createApp(initialTasks = defaultTasks) {
 
         tasks.push(newTask);
 
-        res.status(201).json(newTask);
+        try {
+            if (saveTasksToFile) {
+                await saveTasksToFile(tasks);
+            }
+
+            res.status(201).json(newTask);
+        } catch (error) {
+            next(error);
+        }
     });
 
-    app.patch("/api/tasks/:id", (req, res) => {
+    app.patch("/api/tasks/:id", async (req, res, next) => {
         const id = Number(req.params.id);
         const task = tasks.find((task) => task.id === id);
 
@@ -145,10 +156,18 @@ export function createApp(initialTasks = defaultTasks) {
             task.completed = completed;
         }
 
-        res.status(200).json(task);
+        try {
+            if (saveTasksToFile) {
+                await saveTasksToFile(tasks);
+            }
+
+            res.status(200).json(task);
+        } catch (error) {
+            next(error);
+        }
     });
 
-    app.delete("/api/tasks/:id", (req, res) => {
+    app.delete("/api/tasks/:id", async (req, res, next) => {
         const id = Number(req.params.id);
         const index = tasks.findIndex((task) => task.id === id);
 
@@ -160,7 +179,15 @@ export function createApp(initialTasks = defaultTasks) {
 
         tasks.splice(index, 1);
 
-        res.status(204).send();
+        try {
+            if (saveTasksToFile) {
+                await saveTasksToFile(tasks);
+            }
+
+            res.status(204).send();
+        } catch (error) {
+            next(error);
+        }
     });
 
     app.use((req, res) => {
