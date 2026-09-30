@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -87,6 +88,66 @@ app.post("/api/tasks", (req, res) => {
     tasks.push(newTask);
 
     res.status(201).json(newTask);
+});
+
+app.patch("/api/tasks/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const task = tasks.find((task) => task.id === id);
+
+    if (!task) {
+        return res.status(404).json({
+            error: "Task not found",
+        });
+    }
+
+    const { title, completed } = req.body;
+    const fields = Object.keys(req.body);
+
+    if (
+        fields.length === 0 ||
+        fields.some((field) => field !== "title" && field !== "completed")
+    ) {
+        return res.status(400).json({
+            error: "Invalid update",
+        });
+    }
+
+    if (title !== undefined) {
+        if (typeof title !== "string" || title.trim() === "") {
+            return res.status(400).json({
+                error: "Title must be a non-empty string",
+            });
+        }
+
+        task.title = title.trim();
+    }
+
+    if (completed !== undefined) {
+        if (typeof completed !== "boolean") {
+            return res.status(400).json({
+                error: "Completed must be a boolean",
+            });
+        }
+
+        task.completed = completed;
+    }
+
+    res.status(200).json(task);
+});
+
+app.delete("/api/tasks/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const index = tasks.findIndex((task) => task.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({
+            error: "Task not found",
+        });
+    }
+
+    tasks.splice(index, 1);
+
+    res.status(204).send();
 });
 
 app.use((req, res) => {
