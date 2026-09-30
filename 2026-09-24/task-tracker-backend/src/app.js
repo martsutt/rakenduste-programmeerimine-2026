@@ -57,6 +57,38 @@ app.get("/api/health", (req, res) => {
     res.status(200).json({ status: "ok" });
 });
 
+app.post("/api/tasks", (req, res) => {
+    const { title } = req.body;
+
+    if (typeof title !== "string") {
+        return res.status(400).json({
+            error: "Title is required",
+        });
+    }
+
+    const trimmedTitle = title.trim();
+
+    if (trimmedTitle === "") {
+        return res.status(400).json({
+            error: "Title is required",
+        });
+    }
+
+    const newId = tasks.length
+        ? Math.max(...tasks.map((task) => task.id)) + 1
+        : 1;
+
+    const newTask = {
+        id: newId,
+        title: trimmedTitle,
+        completed: false,
+    };
+
+    tasks.push(newTask);
+
+    res.status(201).json(newTask);
+});
+
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found" });
 });
