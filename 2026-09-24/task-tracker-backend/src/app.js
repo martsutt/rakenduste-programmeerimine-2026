@@ -24,6 +24,10 @@ app.get("/api/crash", (req, res) => {
     throw new Error("Something broke on purpose");
 });
 
+app.get("/api/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
+
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found" });
 });
@@ -34,6 +38,4 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: "Internal server error" });
 });
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
-});
+export { app };
