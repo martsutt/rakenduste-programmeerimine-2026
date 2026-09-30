@@ -7,7 +7,7 @@ import TaskDetailsPage from "./pages/TaskDetailsPage";
 import Header from "./components/Header";
 // import { TaskCard } from "./components/TaskCard";
 // import CompletionToggle from "./components/CompletionToggle";
-import { getTasks } from "./services/taskApi";
+import { getTasks, createTask } from "./services/taskApi";
 
 import "./App.css";
 
@@ -35,15 +35,14 @@ function App() {
     };
   }, []);
 
-  function handleAddTask(title) {
-    setTasks((prev) => [
-      ...prev,
-      {
-        id: prev.length ? Math.max(...prev.map((t) => t.id)) + 1 : 1,
-        title,
-        completed: false,
-      },
-    ]);
+  async function handleAddTask(title) {
+    try {
+      const newTask = await createTask(title);
+
+      setTasks((prev) => [...prev, newTask]);
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   function handleToggleTask(id) {
